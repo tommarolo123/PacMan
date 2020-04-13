@@ -21,7 +21,7 @@ public class PacmanMove : MonoBehaviour
 
             if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) && Valid(Vector2.up)) //　　　　　　　　　　　　　　**Input.getAxis
             {
-                dest = (Vector2)transform.position + Vector2.up;//　　　　Vector2型に変える　　　z座標いらない
+                dest = (Vector2)transform.position + Vector2.up;//　　　1ピクセル移動　Vector2型に変える　　　z座標いらない
              
             }
             if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && Valid(Vector2.left))
@@ -37,11 +37,14 @@ public class PacmanMove : MonoBehaviour
             {
                 dest = (Vector2)transform.position + Vector2.down;
             }
+            Vector2 dir = dest - (Vector2)transform.position; //移動方向ベクトルを取得してanimatorに渡す
+            GetComponent<Animator>().SetFloat("DirX", dir.x);
+            GetComponent<Animator>().SetFloat("DirY", dir.y); 
         }
-        }
+     }
 
 
-    private bool Valid(Vector2 dir) // read me で説明
+    private bool Valid(Vector2 dir) // 目的地に行けるかどうか　（ read me で説明）
     {
         Vector2 pos = transform.position;
         RaycastHit2D hit = Physics2D.Linecast(pos + dir, pos);
