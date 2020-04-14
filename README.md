@@ -3,7 +3,7 @@
 開発完成までノートとして使います。  
 
 現在の開発は　Pacmanの移動、豆のdestory　敵の作成  
-![image][https://github.com/tommarolo123/PacMan/blob/master/pacman.gif)
+![image](https://github.com/tommarolo123/PacMan/blob/master/pacman.gif)
 
 
 pacman壁に当たる場合移動が動けなくなる
