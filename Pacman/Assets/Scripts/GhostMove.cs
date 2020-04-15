@@ -10,7 +10,7 @@ public class GhostMove : MonoBehaviour
     private int index = 0;
     private void Start()
     {
-        LoadAPath(wayPointGos[Random.Range(0, 4)]);
+        LoadAPath(wayPointGos[Random.Range(0, wayPointGos.Length)]);
     }
 
     private void FixedUpdate()
@@ -27,7 +27,7 @@ public class GhostMove : MonoBehaviour
             if(index >= wayPoints.Count)
             {
                 index = 0;
-                LoadAPath(wayPointGos[Random.Range(0, 4)]);
+                LoadAPath(wayPointGos[Random.Range(0, wayPointGos.Length)]);
             }
         }
         Vector2 dir = (Vector2)wayPoints[index] - (Vector2)transform.position; //移動方向ベクトルを取得してanimatorに渡す
@@ -36,12 +36,10 @@ public class GhostMove : MonoBehaviour
     
     }
     private void LoadAPath(GameObject go)
-
-
     {
 
         wayPoints.Clear();
-        foreach (Transform t in wayPointGos[Random.Range(0, 4)].transform)
+        foreach (Transform t in go.transform)   //[a,b)
         {
             wayPoints.Add(t.position);
         }
