@@ -8,9 +8,12 @@ public class GhostMove : MonoBehaviour
     public float speed = 0.2f;
     private List<Vector3> wayPoints = new List<Vector3>();
     private int index = 0;
+    private Vector3 startPos;
     private void Start()
     {
-        LoadAPath(wayPointGos[Random.Range(0, wayPointGos.Length)]);
+        startPos = transform.position + new Vector3(0, 3, 0); //敵の出発点　初期位置上のｙ＋３  
+        LoadAPath(wayPointGos[GameManager.Instance.usingIndex[GetComponent<SpriteRenderer>().sortingOrder - 2]]);//敵が2から5層　-2すると0から3になる。usingIndex[]に引き渡す。その番号を用いてwayPointGosのルールを選ぶ
+        
     }
 
     private void FixedUpdate()
@@ -43,6 +46,9 @@ public class GhostMove : MonoBehaviour
         {
             wayPoints.Add(t.position);
         }
+        wayPoints.Insert(0, startPos);//それぞれの敵の出発点違うようにする
+            wayPoints.Add(startPos);
+       
     }
 
     private void OnTriggerEnter2D(Collider2D collision) //敵がpacmanを食う
