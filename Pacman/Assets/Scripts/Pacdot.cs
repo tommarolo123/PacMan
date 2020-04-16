@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Pacdot : MonoBehaviour
 {
-    
-    
+
+    public bool isSuperPacdot = false;
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
