@@ -67,8 +67,12 @@ public class GameManager : MonoBehaviour
 
     private void CreatSuperPacdot()
     {
+        if (pacdotGos.Count < 5)
+        {
+            return;
+        }
         int tempIndex = Random.Range(0, pacdotGos.Count);//すべての豆からランダムに一つのスーパー豆を生成
-        pacdotGos[tempIndex].transform.localScale = new Vector3(3, 3, 3);//スーパー豆を大きくする
+        pacdotGos[tempIndex].transform.localScale = new Vector3(4, 4, 4);//スーパー豆を大きくする
         pacdotGos[tempIndex].GetComponent<Pacdot>().isSuperPacdot = true;
     }
     private void FreezeEnemy()

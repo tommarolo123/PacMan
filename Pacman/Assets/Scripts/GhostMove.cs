@@ -55,14 +55,17 @@ public class GhostMove : MonoBehaviour
     {
         if (collision.gameObject.name == "Pacman")
         {
-            if (GameManager.Instance.isSuperPacman) //スーパー豆にぶつかったら原点に戻る
+            if (GameManager.Instance.isSuperPacman) //食えないで、敵が原点に戻る
 
             {
                 transform.position = startPos - new Vector3(0, 3, 0);//原点に戻る
                 index = 0;
             }
-            Destroy(collision.gameObject);
-        }
+            else
+            {
+                Destroy(collision.gameObject);
+            }
+            }
     }
 }
 
