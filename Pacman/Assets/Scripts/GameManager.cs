@@ -1,7 +1,9 @@
-﻿
+﻿using UnityEngine.UI;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.SceneManagement;
+
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
@@ -18,7 +20,20 @@ public class GameManager : MonoBehaviour
     public GameObject Pinky;
     public GameObject Blinky;
     public bool isSuperPacman = false;
+    public GameObject startCountDownPrefab;
+    public GameObject gameoverPrefab;
+    public GameObject winPrefab;
+    public AudioClip startClip;
+    public GameObject startPanel;
+    public GameObject gamePanel;
 
+    private int pacdotNum = 0;//全部の豆数
+    private int nowEat = 0;//今食べた豆数
+    public int score = 0;//
+
+    public Text remainText;
+    public Text nowText;
+    public Text scoreText;
 
     public List<int> usingIndex = new List<int>();
     public List<int> rawIndex = new List<int> { 0, 1, 2, 3 };
@@ -38,20 +53,79 @@ public class GameManager : MonoBehaviour
         {
             pacdotGos.Add(t.gameObject);
         }
+        pacdotNum = GameObject.Find("Maze").transform.childCount;
+    
     }
 
     private void Start()
-    {
-        Invoke("CreatSuperPacdot", 10f);//10秒後、スーパー豆が出る
 
+    {
+        SetGameState(false);
+      
+
+    }
+
+    private void Update()
+    {
+        if(nowEat == pacdotNum&&pacman.GetComponent<PacmanMove>().enabled != false)
+        {
+            gamePanel.SetActive(false);
+            Instantiate(winPrefab);
+            StopAllCoroutines();
+            SetGameState(false);
+        }
+        if(nowEat == pacdotNum && pacman)
+        {
+            if (Input.anyKeyDown)
+            {
+                SceneManager.LoadScene(0);
+            }
+        }
+
+        if (gamePanel.activeInHierarchy)
+        {
+            remainText.text = "Remain:\n\n" + (pacdotNum - nowEat);
+            nowText.text = "Eaten:\n\n" + nowEat;
+            scoreText.text = "Score:\n\n" + score;
+        }
+    }
+    public void OnstartButton()
+    {
+        StartCoroutine(PlayStartCountDown());
+        AudioSource.PlayClipAtPoint(startClip, new Vector3(0,0,-10));
+        
+        startPanel.SetActive(false);
+
+
+    }
+
+   IEnumerator PlayStartCountDown()
+    {
+        
+        GameObject go = Instantiate(startCountDownPrefab);
+        yield return new WaitForSeconds(4f);
+        Destroy(go);
+        SetGameState(true);
+        Invoke("CreatSuperPacdot", 10f);
+        gamePanel.SetActive(true);
+        GetComponent<AudioSource>().Play();
+
+    }
+    public void OnExitButton()
+    {
+        Application.Quit();
     }
     public void OnEatPacdot(GameObject go)
     {
+        nowEat++;
+        score += 100;
         pacdotGos.Remove(go);
+
     }
 
-    public void OnEatSuperPacdot()
-    {
+    public void OnEatSuperPacdot() { 
+        score += 200;//スーパー豆は300点
+        score += 200;//スーパー豆は300点
         Invoke("CreatSuperPacdot", 10f);
         isSuperPacman = true;
         FreezeEnemy();
@@ -100,4 +174,14 @@ public class GameManager : MonoBehaviour
         Inky.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
 
     }
+    private void SetGameState(bool state)
+    {
+        Blinky.GetComponent<GhostMove>().enabled = state;
+        Clyde.GetComponent<GhostMove>().enabled = state;
+        Pinky.GetComponent<GhostMove>().enabled = state;
+        Inky.GetComponent<GhostMove>().enabled = state;
+        pacman.GetComponent<PacmanMove>().enabled = state;
+    
+    }
+
 }

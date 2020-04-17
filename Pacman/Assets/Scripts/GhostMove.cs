@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class GhostMove : MonoBehaviour
 {
     //AIを使わないで　敵の移動は決まったルートに従って移動する
@@ -13,7 +13,7 @@ public class GhostMove : MonoBehaviour
     {
         startPos = transform.position + new Vector3(0, 3, 0); //敵の出発点　初期位置上のｙ＋３  
         LoadAPath(wayPointGos[GameManager.Instance.usingIndex[GetComponent<SpriteRenderer>().sortingOrder - 2]]);//敵が2から5層　-2すると0から3になる。usingIndex[]に引き渡す。その番号を用いてwayPointGosのルールを選ぶ
-        
+
     }
 
     private void FixedUpdate()
@@ -26,8 +26,8 @@ public class GhostMove : MonoBehaviour
         else
         {
             index++;
-            
-            if(index >= wayPoints.Count)
+
+            if (index >= wayPoints.Count)
             {
                 index = 0;
                 LoadAPath(wayPointGos[Random.Range(0, wayPointGos.Length)]);
@@ -36,7 +36,7 @@ public class GhostMove : MonoBehaviour
         Vector2 dir = (Vector2)wayPoints[index] - (Vector2)transform.position; //移動方向ベクトルを取得してanimatorに渡す
         GetComponent<Animator>().SetFloat("DirX", dir.x);
         GetComponent<Animator>().SetFloat("DirY", dir.y);
-    
+
     }
     private void LoadAPath(GameObject go)
     {
@@ -47,8 +47,8 @@ public class GhostMove : MonoBehaviour
             wayPoints.Add(t.position);
         }
         wayPoints.Insert(0, startPos);//それぞれの敵の出発点違うようにする
-            wayPoints.Add(startPos);
-       
+        wayPoints.Add(startPos);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision) //敵がpacmanを食う
@@ -60,12 +60,21 @@ public class GhostMove : MonoBehaviour
             {
                 transform.position = startPos - new Vector3(0, 3, 0);//原点に戻る
                 index = 0;
+                GameManager.Instance.score += 500;//敵を食べたら500点
             }
             else
             {
-                Destroy(collision.gameObject);
+                collision.gameObject.SetActive(false);
+                GameManager.Instance.gamePanel.SetActive(false);
+                Instantiate(GameManager.Instance.gameoverPrefab);
+                Invoke("ReStart", 3f);
             }
-            }
+        }
+    }
+
+    private void ReStart()
+    {
+        SceneManager.LoadScene(0);
     }
 }
 
